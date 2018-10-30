@@ -1,28 +1,50 @@
+<!DOCTYPE html>
 <html>
-<head>
-<title>City Finder</title>
-<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
-</head>
-<body>
-<form>
-Enter A Utah City: <input type="text" id="cityfield" value=""><br>
-Suggestion: <span id="txtHint">Empty</span>
-</form>
-<script>
-$( "#cityfield" ).keyup(function() {
-  var url = "getcity?q="+$("#cityfield").val();
-  $.getJSON(url,function(data) {
-    var everything;
-    everything = "<ul>";
-    $.each(data, function(i,item) {
-      everything += "<li> "+data[i].city;
-    });
-    everything += "</ul>";
-    $("#txtHint").html(everything);
-  });
-});
-
-</script>
-</body>
+  <head>
+    <title>City Finder</title>
+      <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+      <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script>
+      $(document).ready(function() {
+        $( "#cityField" ).keyup(function() {
+          var url = "getcity?q="+$("#cityField").val();
+          $.getJSON(url, function(data) {
+            var everything;
+            everything = "<ul style=list-style-type:none>";
+            $.each(data, function(i,item) {
+              everything += "<li> "+data[i].city;
+            });
+            everything += "</ul>";
+            $("#txtHint").html(everything);
+          })
+          .done(function() { console.log('getJSON request succeeded!'); })
+          .fail(function(jqXHR, textStatus, errorThrown) { 
+            console.log('getJSON request failed! ' + textStatus); 
+            console.log("incoming "+jqXHR.responseText);
+          })
+          .always(function() { console.log('getJSON request ended!');
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+  <h1>Weather Search</h1>
+  <form>Enter A Utah City: <input type="text" id="cityField" value=""><br>
+    Suggestion: <span id="txtHint">Empty</span>
+  </form>
+  <p>City</p>
+  <textarea id="displayCity">No City</textarea>
+  <br />
+  <br />
+  <br />
+  <h1>Owlbot word lookup</h1>
+    <form>Enter a word to search: <input type="text" id="wordEntry" value=""></form>
+    <div id='app' ng-app='app' ng-controller='mainCtrl'>
+      <button ng-click="getWordEntry()">Get definition</button>
+        <ng-if="owlbot.length">
+          {{ owlbot }}
+        </ng-if>
+    </div>
+  </body>
 </html>
